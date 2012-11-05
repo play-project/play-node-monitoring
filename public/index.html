@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.css">
+		<style type="text/css">
+		body {
+			padding-top: 60px;
+			padding-bottom: 40px;
+		}
+		
+		.sidebar-nav {
+			padding: 9px 0;
+		}
+		</style>
+		<link href="assets/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+      
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    
+  	<div class="navbar navbar-fixed-top">
+  		<div class="navbar-inner">
+  			<div class="container">
+  				<a class="btn btn-navbar" data-toggle="collapse"
+  					data-target=".nav-collapse">
+  					<span class="icon-bar"></span>
+  					<span class="icon-bar"></span>
+  					<span class="icon-bar"></span>
+  				</a>
+  				<a class="brand" href="#">PLAY.mon</a>
+  				<div class="nav-collapse" id="main-menu">
+  					<ul class="nav" id="main-menu-left">
+  						<li class="dropdown"><a class="dropdown-toggle"
+  							data-toggle="dropdown" href="#">Topics <b class="caret"></b></a>
+  							<ul class="dropdown-menu" id="swatch-menu">
+                  <li><a href="#">List</a></li>
+                  <li><a href="#">DSB</a></li>
+  							</ul>
+  						</li>
+<!--
+  						<li class="dropdown"><a class="dropdown-toggle"
+  							data-toggle="dropdown" href="#">Services <b class="caret"></b></a>
+  							<ul class="dropdown-menu" id="swatch-menu">
+  				                  <li><a href="@{RegistryController.services()}">List</a></li>
+  				                  <li><a href="@{RegistryController.load()}">Load</a></li>
+  							</ul>
+  						</li>
+-->
+  					</ul>
+  					<ul class="nav pull-right" id="main-menu-right">
+  						<li class="dropdown" id="preview-menu">
+  							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin <b class="caret"></b></a>
+  							<ul class="dropdown-menu">
+  							   	<li><a href="#"><b>Connect...</b></a></li>
+  							</ul>
+  						</li>
+  					</ul>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
+
+  	<div class="container">
+      
+		<div id="remove" class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+			<div id="waiting">Waiting message...</div>
+		</div>
+
+    <div id="socketout"></div>
+</div>
+
+  <script>
+  var socket = io.connect('http://localhost:8334');
+  var nb = 0;
+  var content = document.getElementById("notify");
+  var count = document.getElementById("count");
+
+  socket.on('notify', function(data) {
+    
+    nb++;
+  
+    //$('#notify').append($('<p>').append($('<em>').text(data)));
+    var receivedAt = new Date();
+
+    $('#socketout').prepend('<div class=\"alert alert-info\">New message #' + nb + ' at ' + receivedAt.toGMTString() + '</div><pre><code>' + JSON.stringify(data.message, null, 4) + '' + '</code></pre><br><br>');        
+  
+    $('#remove').remove();
+    //('Last message received at ' + receivedAt);
+  });
+  </script>
+  <script src="assets/javascript/jquery-1.7.2.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-transition.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-alert.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-modal.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-dropdown.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-scrollspy.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-tab.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-tooltip.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-popover.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-button.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-collapse.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-carousel.js"></script>
+  <script src="assets/bootstrap/js/bootstrap-typeahead.js"></script>
+
+  </body>
+</html>

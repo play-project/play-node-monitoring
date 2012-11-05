@@ -1,0 +1,36 @@
+{
+  "name": "play-node-pubsubmonitor",
+  "version": "0.0.1",
+  "description": "Monitoring WSN stuff",
+  "author": "Christophe Hamerling <christophe.hamerling@linagora.com>",
+  "homepage": "http://github.com/play-project/play-node-pubsubmonitor",
+  "keywords": [
+    "node"
+  ],
+  "maintainers": [{
+    "name": "Christophe Hamerling",
+    "email": "christophe.hamerling@gmail.com"
+  }],
+  "contributors": [],
+  "licenses": [{
+    "type": "MIT",
+    "url": "http://mths.be/mit"
+  }],
+  "bugs": {
+    "url": "https://github.com/play-project/play-node-pubsubmonitor/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/play-project/play-node-pubsubmonitor.git"
+  },
+  "engines": {
+    "node": "0.6.x",
+    "npm": "1.0.x"
+  },
+  "dependencies": {
+    "socket.io": "0.9.10",
+    "socket.io-client": "0.9.10",
+    "underscore": "*",
+    "express": "3.0"
+  }
+}
