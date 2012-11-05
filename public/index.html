@@ -70,22 +70,17 @@
 </div>
 
   <script>
-  var socket = io.connect('http://localhost:8334');
+  var socket = io.connect();
   var nb = 0;
   var content = document.getElementById("notify");
   var count = document.getElementById("count");
 
   socket.on('notify', function(data) {
-    
     nb++;
-  
-    //$('#notify').append($('<p>').append($('<em>').text(data)));
     var receivedAt = new Date();
-
     $('#socketout').prepend('<div class=\"alert alert-info\">New message #' + nb + ' at ' + receivedAt.toGMTString() + '</div><pre><code>' + JSON.stringify(data.message, null, 4) + '' + '</code></pre><br><br>');        
   
     $('#remove').remove();
-    //('Last message received at ' + receivedAt);
   });
   </script>
   <script src="assets/javascript/jquery-1.7.2.js"></script>

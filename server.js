@@ -5,13 +5,22 @@
  */
 
 var express = require('express')
+  , path = require('path')
   , app = express()
-  , server = require('http').createServer(app)
-  , io = require('socket.io').listen(server);
+  , http = require('http')
+  , io = require('socket.io');
   
-var port = process.env.PORT || 8334;
-app.use(express.bodyParser());  
-app.use('/static', express.static(__dirname + '/public'));
+app.configure(function () {
+  app.set('port', process.env.PORT || 3000);
+  app.use(express.logger('dev'));
+  app.use(express.bodyParser())
+  app.use(express.static(path.join(__dirname, 'public')));
+});
+    
+var server = http.createServer(app);
+io = io.listen(server);
+
+//app.use('/static', express.static(__dirname + '/public'));
 
 app.get('/', function(req, res) {
   res.redirect("/static/index.html");
@@ -32,8 +41,9 @@ io.sockets.on('connection', function (socket) {
   console.log("Got a connection to socket.io channel");
 });
 
-server.listen(port);
-console.log('Server is started on ' + port);
+server.listen(app.get('port'), function () {
+    console.log("Express server listening on port " + app.get('port'));
+});
 
 function push_notify(notify, callback) {
   // store it : TODO
