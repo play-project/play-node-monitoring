@@ -1,3 +1,3 @@
-# node-pubsubmonitor
+# play-node-monitoring
 
-Live monitoring of pub/sub system.
+Receive JSON events and forward them to socket.io clients.
