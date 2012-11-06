@@ -66,9 +66,11 @@
 			<div id="waiting">Waiting message...</div>
 		</div>
     
-    <div id="meanstart"></div>
-    
-    <div id="meanten"></div>
+    <div class="alert alert-success">
+      <div id="meanstart"></div>
+      <div id="meanten"></div>
+    </div>
+    <br/>
 
     <div id="socketout"></div>
 </div>
@@ -88,11 +90,11 @@
   });
   
   socket.on('average_since_start', function(data) {
-    $('#meanstart').html('Mean since start : ' + data.message + ' messages/second');
+    $('#meanstart').html('FPS since start : ' + data.message + ' messages/second');
   });
   
   socket.on('average_last_ten', function(data) {
-    $('#meanten').html('Mean in last ten seconds : ' + data.message + ' messages/second');
+    $('#meanten').html('FPS in last ten seconds : ' + data.message + ' messages/second');
   });
   
   </script>
