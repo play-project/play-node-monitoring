@@ -29,13 +29,13 @@
   				<a class="brand" href="#">PLAY.mon</a>
   				<div class="nav-collapse" id="main-menu">
   					<ul class="nav" id="main-menu-left">
-  						<li class="dropdown"><a class="dropdown-toggle"
-  							data-toggle="dropdown" href="#">Messages <b class="caret"></b></a>
-  							<ul class="dropdown-menu" id="swatch-menu">
+              <li class="dropdown"><a class="dropdown-toggle"
+                data-toggle="dropdown" href="#">Messages <b class="caret"></b></a>
+                <ul class="dropdown-menu" id="swatch-menu">
                   <li><a href="/index.html">Notify</a></li>
                   <li><a href="/errors.html">Errors</a></li>
-  							</ul>
-  						</li>
+                </ul>
+              </li>
 <!--
   						<li class="dropdown"><a class="dropdown-toggle"
   							data-toggle="dropdown" href="#">Services <b class="caret"></b></a>
@@ -63,14 +63,8 @@
       
 		<div id="remove" class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert">×</button>
-			<div id="waiting">Waiting message...</div>
+			<div id="waiting">Waiting for errors...</div>
 		</div>
-    
-    <div class="alert alert-success">
-      <div id="meanstart"></div>
-      <div id="meanten"></div>
-    </div>
-    <br/>
 
     <div id="socketout"></div>
 </div>
@@ -78,23 +72,13 @@
   <script>
   var socket = io.connect();
   var nb = 0;
-  var content = document.getElementById("notify");
-  var count = document.getElementById("count");
 
-  socket.on('notify', function(data) {
+  socket.on('notify_error', function(data) {
     nb++;
     var receivedAt = new Date();
-    $('#socketout').prepend('<div class=\"alert alert-info\">New message #' + nb + ' at ' + receivedAt.toGMTString() + '</div><pre><code>' + JSON.stringify(data.message, null, 4) + '' + '</code></pre><br><br>');        
+    $('#socketout').prepend('<div class=\"alert alert-info\">New error #' + nb + ' at ' + receivedAt.toGMTString() + '</div><pre><code>' + JSON.stringify(data.message, null, 4) + '' + '</code></pre><br><br>');        
   
     $('#remove').remove();
-  });
-  
-  socket.on('average_since_start', function(data) {
-    $('#meanstart').html('FPS since start : ' + data.message + ' messages/second');
-  });
-  
-  socket.on('average_last_ten', function(data) {
-    $('#meanten').html('FPS in last ten seconds : ' + data.message + ' messages/second');
   });
   
   </script>

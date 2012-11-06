@@ -25,8 +25,18 @@ var stats = {
   average_since_start : 0,
   average_last_ten : 0,
   cache_last_ten : 0,
-  last_call_date : null
+  last_call_date : null,
+  in : 0,
+  out : 0
 }
+
+var errors = {
+  count : 0,
+  in : 0,
+  out : 0,
+  last_date : null
+}
+
 var start_date;
 
 app.get('/', function(req, res) {
@@ -37,6 +47,10 @@ app.get('/api/v1/stats', function(req, res) {
   res.json(stats);
 });
 
+app.get('/api/v1/errors', function(req, res) {
+  res.json(errors);
+});
+
 app.post('/monitoring/dsb/wsn/', function(req, res) {
   stats.last_call_date = new Date().toGMTString();
 
@@ -45,15 +59,33 @@ app.post('/monitoring/dsb/wsn/', function(req, res) {
   notify.data = req.body;
   stats.requests ++;
   stats.cache_last_ten ++;
-    
-  push_notify(notify, function(req, res) {
-    res.send({error : 'Something is bad...'}, 500);
-  });
-  res.send();
+
+  // check errors...
+  var type = JSON.stringify(req.body.type);
+  if (type.indexOf('Error') != -1 || type.indexOf('error') != -1) {
+    push_error(notify, function(err) {
+      if (err) {
+        res.send(500, err);
+      } 
+      res.send(200);
+    });
+
+  } else {
+    push_notify(notify, function(err) {
+      if (err) {
+        res.send(500, err);
+      }
+      res.send(200);
+    });
+  }
 });
 
 io.sockets.on('connection', function (socket) {
   console.log("Got a connection to socket.io channel");
+
+  // send data to the new client
+  socket.emit('average_since_start', { type: 'mean', message: stats.average_since_start});
+
 });
 
 // global average since start
@@ -88,7 +120,39 @@ server.listen(app.get('port'), function () {
     start_date = new Date();
 });
 
+//
+// Handle business notifications
+//
 function push_notify(notify, callback) {
   // store it : TODO
-  io.sockets.emit('notify', { type: 'notify', message: notify});  
+
+  var type = JSON.stringify(notify.data.type);
+  if (type.indexOf('out') != -1 || type.indexOf('Out') != -1) {
+    stats.out ++;
+  }
+  if (type.indexOf('in') != -1 || type.indexOf('In') != -1) {
+    stats.in ++;
+  }
+
+  io.sockets.emit('notify', { type: 'notify', message: notify}); 
+  callback();
+}
+
+//
+// Handle error messages
+//
+function push_error(notify, callback) {
+  errors.count ++;
+  errors.last_date = new Date();
+  
+  var type = JSON.stringify(notify.data.type);
+  if (type.indexOf('out') != -1 || type.indexOf('Out') != -1) {
+    errors.out ++;
+  }
+  if (type.indexOf('in') != -1 || type.indexOf('In') != -1) {
+    errors.in ++;
+  }
+
+  io.sockets.emit('notify_error', {type: 'error', message: notify});
+  callback();
 }
