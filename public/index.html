@@ -36,6 +36,12 @@
                   <li><a href="/errors.html">Errors</a></li>
   							</ul>
   						</li>
+  						<li class="dropdown"><a class="dropdown-toggle"
+  							data-toggle="dropdown" href="#">Stats <b class="caret"></b></a>
+  							<ul class="dropdown-menu" id="swatch-menu">
+                  <li><a href="/api/v1/stats" target="_blank">API</a></li>
+  							</ul>
+  						</li>
 <!--
   						<li class="dropdown"><a class="dropdown-toggle"
   							data-toggle="dropdown" href="#">Services <b class="caret"></b></a>
@@ -66,12 +72,14 @@
 			<div id="waiting">Waiting message...</div>
 		</div>
     
-    <div class="alert alert-success">
-      <div id="meanstart"></div>
-      <div id="meanten"></div>
+    <h3>Live Stats</h3>
+    <div id="stats" class="well">
+      <b>Last update : </b><b id="meanlast">-</b><br>
+      <b>FPS since start : </b><b id="meanstart">-</b><br>
+      <b>FPS in the last ten seconds : </b><b id="meanten">-</b>
     </div>
-    <br/>
 
+    <h3>Messages</h3>
     <div id="socketout"></div>
 </div>
 
@@ -90,11 +98,13 @@
   });
   
   socket.on('average_since_start', function(data) {
-    $('#meanstart').html('FPS since start : ' + data.message + ' messages/second');
+    $('#meanstart').html(data.message);
+    $('#meanlast').html('' + new Date());
   });
   
   socket.on('average_last_ten', function(data) {
-    $('#meanten').html('FPS in last ten seconds : ' + data.message + ' messages/second');
+    $('#meanten').html(data.message);
+    $('#meanlast').html('' + new Date());
   });
   
   </script>
