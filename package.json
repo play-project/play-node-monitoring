@@ -32,6 +32,7 @@
     "socket.io-client": "0.9.10",
     "underscore": "*",
     "express": "3.0",
-    "redis": "*"
+    "redis": "*",
+    "mongoose": "*"
   }
 }

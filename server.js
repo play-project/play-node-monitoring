@@ -9,7 +9,8 @@ var express = require('express')
   , app = express()
   , http = require('http')
   , io = require('socket.io')
-  , stats = require('./lib/stats');
+  , stats = require('./lib/stats')
+  , store = require('./lib/store');
     
 app.configure(function () {
   app.set('port', process.env.PORT || 3000);
@@ -101,6 +102,12 @@ function push_error(notify, callback) {
   if (type.indexOf('in') != -1 || type.indexOf('In') != -1) {
     stats.new_in_error();
   }
+  
+  store.store_error(notify, function(err) {
+    // notify the stats layer that we have error...
+    stats.storage_error(); 
+  });
+  
   io.sockets.emit('notify_error', {type: 'error', message: notify});
   callback();
 }
