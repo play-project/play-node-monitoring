@@ -1,5 +1,5 @@
 /*!
- * node socket.io client
+ * PLAY live monitoring
  * Copyright(c) 2012 Christophe Hamerling <chamerling@linagora.com>
  * MIT Licensed
  */
@@ -13,7 +13,7 @@ var express = require('express')
 app.configure(function () {
   app.set('port', process.env.PORT || 3000);
   app.use(express.logger('dev'));
-  app.use(express.bodyParser())
+  app.use(express.bodyParser());
   app.use(express.static(path.join(__dirname, 'public')));
 });
     
@@ -21,6 +21,7 @@ var server = http.createServer(app);
 io = io.listen(server);
 
 var stats = {
+  start_date : null,
   requests : 0,
   average_since_start : 0,
   average_last_ten : 0,
@@ -37,8 +38,6 @@ var errors = {
   last_date : null
 }
 
-var start_date;
-
 app.get('/', function(req, res) {
   res.redirect("/static/index.html");
 });
@@ -51,6 +50,7 @@ app.get('/api/v1/errors', function(req, res) {
   res.json(errors);
 });
 
+// TODO : Add middleware to intercept and create stats
 app.post('/monitoring/dsb/wsn/', function(req, res) {
   stats.last_call_date = new Date().toGMTString();
 
@@ -78,6 +78,7 @@ app.post('/monitoring/dsb/wsn/', function(req, res) {
       res.send(200);
     });
   }
+  res.send(200);
 });
 
 io.sockets.on('connection', function (socket) {
@@ -85,18 +86,16 @@ io.sockets.on('connection', function (socket) {
 
   // send data to the new client
   socket.emit('average_since_start', { type: 'mean', message: stats.average_since_start});
-
+  socket.emit('average_last_ten', { type: 'average', message: stats.average_last_ten / 10});  
 });
 
 // global average since start
 setInterval(function(param) {
   var fps = 0;
   if (stats.requests > 0) {
-    //console.log("Request since start ", requests);
-    fps = stats.requests / ((new Date() - start_date) / 1000);
+    fps = stats.requests / ((new Date() - stats.start_date) / 1000);
   }
   stats.average_since_start = fps;
-  //console.log('Mean since start : ', fps);
   io.sockets.emit('average_since_start', { type: 'mean', message: fps});  
 }, 1000);
 
@@ -116,8 +115,8 @@ setInterval(function(param) {
 }, 10000);
 
 server.listen(app.get('port'), function () {
-    console.log("Express server listening on port " + app.get('port'));
-    start_date = new Date();
+    console.log("Monitoring server listening on port " + app.get('port'));
+    stats.start_date = new Date();
 });
 
 //
