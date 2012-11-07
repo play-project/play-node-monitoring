@@ -9,9 +9,8 @@ var express = require('express')
   , app = express()
   , http = require('http')
   , io = require('socket.io')
-  , api_stats = require('./lib/api_stats')
-  , wsn_stats = require('./lib/wsn_stats')
-  
+  , stats = require('./lib/stats');
+    
 app.configure(function () {
   app.set('port', process.env.PORT || 3000);
   app.use(express.logger('dev'));
@@ -28,17 +27,8 @@ app.get('/', function(req, res) {
 
 // API V1
 
-app.get('/api/v1/calls', function(req, res) {
-  res.json(api_stats.stats());
-});
-
 app.get('/api/v1/stats', apiStats, function(req, res) {
-  res.json(
-    {
-      api : api_stats.stats(),
-      wsn : wsn_stats.stats()
-    }
-  );
+  res.json(stats.stats());
 });
 
 // Collecting Monitoring
@@ -76,13 +66,13 @@ io.sockets.on('connection', function (socket) {
 // Timers
 
 setInterval(function(param) {
-  wsn_stats.push_average(io);
+  stats.push_average(io);
 }, 10000);
 
 server.listen(app.get('port'), function () {
     console.log("Monitoring server listening on port " + app.get('port'));
     // TODO EventEmitter
-    wsn_stats.started();
+    stats.started();
 });
 
 //
@@ -92,10 +82,10 @@ server.listen(app.get('port'), function () {
 function push_notify(notify, callback) {
   var type = JSON.stringify(notify.data.type);
   if (type.indexOf('out') != -1 || type.indexOf('Out') != -1) {
-    wsn_stats.new_out_call();
+    stats.new_out_call();
   }
   if (type.indexOf('in') != -1 || type.indexOf('In') != -1) {
-    wsn_stats.new_in_call()
+    stats.new_in_call()
   }
   
   // TODO : EventEmitter
@@ -106,10 +96,10 @@ function push_notify(notify, callback) {
 function push_error(notify, callback) {  
   var type = JSON.stringify(notify.data.type);
   if (type.indexOf('out') != -1 || type.indexOf('Out') != -1) {
-    wsn_stats.new_out_error();
+    stats.new_out_error();
   }
   if (type.indexOf('in') != -1 || type.indexOf('In') != -1) {
-    wsn_stats.new_in_error();
+    stats.new_in_error();
   }
   io.sockets.emit('notify_error', {type: 'error', message: notify});
   callback();
@@ -118,11 +108,11 @@ function push_error(notify, callback) {
 // Middleware
 
 function monitoringStats(req, res, next) {
-  wsn_stats.new_call();
+  stats.new_call(req);
   next();
 }
 
 function apiStats(req, res, next) {
-  api_stats.new_call();
+  stats.new_api_call(req);
   next();
 }
