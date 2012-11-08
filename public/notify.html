@@ -48,6 +48,8 @@
                   <li><a href="/api/v1/stats" target="_blank">API</a></li>
   							</ul>
   						</li>
+
+
 <!--
   						<li class="dropdown"><a class="dropdown-toggle"
   							data-toggle="dropdown" href="#">Services <b class="caret"></b></a>
@@ -72,6 +74,11 @@
   	</div>
 
   	<div class="container">
+      
+		<div id="remove" class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+			<div id="waiting">Waiting message...</div>
+		</div>
     
     <h3>Live Stats</h3>
     <div id="stats" class="well">
@@ -79,55 +86,36 @@
       <b>FPS since start : </b><b id="meanstart">-</b><br>
       <b>FPS in the last ten seconds : </b><b id="meanten">-</b>
     </div>
-    
-    <h3>Live Errors</h3>
-    <div id="errors" class="well">
-      <b>Last error : </b><b id="errorlast">-</b><br>
-      <b>Nb Errors : </b><b id="nberrors">-</b><br>
-      <b>FPS : </b><b id="erroravg">-</b><br>
-      <b>Last error message : </b><b id="errormsg">-</b><br>
-    </div>
-    
+
+    <h3>Messages</h3>
     <div id="socketout"></div>
-    
 </div>
 
-<script>
-var socket = io.connect();
-var nb = 0;
-var nb_errors = 0;
-var error = null;
-var start_date = new Date();
+  <script>
+  var socket = io.connect();
+  var nb = 0;
+  var content = document.getElementById("notify");
+  var count = document.getElementById("count");
 
-socket.on('notify_error', function(data) {
-  nb_errors++;
+  socket.on('notify', function(data) {
+    nb++;
+    var receivedAt = new Date();
+    $('#socketout').prepend('<div class=\"alert alert-info\">New message #' + nb + ' at ' + receivedAt.toGMTString() + '</div><pre><code>' + JSON.stringify(data.message, null, 4) + '' + '</code></pre><br><br>');        
   
-  if (data.message.data.error) {
-    error = data.message.data.error;
-  } else {
-    error = '-';
-  }
-  $('#errorlast').html(new Date().toGMTString());
-  $('#errormsg').html(error); 
-  $('#nberrors').html(nb_errors);
-  $('#erroravg').html(nb_errors / (new Date() - start_date) * 1000);
+    $('#remove').remove();
+  });
   
-  //$('#socketout').prepend('<pre><code>' + JSON.stringify(data.message, null, 4) + '' + '</code></pre><br><br>');        
-  
-});
-
-socket.on('average_since_start', function(data) {
+  socket.on('average_since_start', function(data) {
     $('#meanstart').html(data.message);
     $('#meanlast').html('' + new Date());
-});
-
-socket.on('average_last_ten', function(data) {
+  });
+  
+  socket.on('average_last_ten', function(data) {
     $('#meanten').html(data.message);
     $('#meanlast').html('' + new Date());
-}); 
+  });
   
-</script>
-
+  </script>
   <script src="assets/javascript/jquery-1.7.2.js"></script>
   <script src="assets/bootstrap/js/bootstrap-transition.js"></script>
   <script src="assets/bootstrap/js/bootstrap-alert.js"></script>
