@@ -30,25 +30,11 @@
      
 		function requestData() {
       return;
-      
-    	$.ajax({
-				url: 'live-server-data.php', 
-				success: function(point) {
-					var series = chart.series[0],
-					shift = series.data.length > 20; // shift if the series is longer than 20
-		
-					// add the point
-					chart.series[0].addPoint(eval(point), true, shift);
-					
-					// call it again after one second
-					setTimeout(requestData, 1000);	
-				},
-				cache: false
-			});
 		}
 			
 		$(document).ready(function() {
-			chart = new Highcharts.Chart({
+      
+			fps = new Highcharts.Chart({
 				chart: {
 					renderTo: 'container-fps',
 					defaultSeriesType: 'spline',
@@ -57,7 +43,7 @@
 					}
 				},
 				title: {
-					text: 'PubSub Rate'
+					text: 'API Rate'
 				},
 				xAxis: {
 					type: 'datetime',
@@ -73,20 +59,41 @@
 						margin: 80
 					}
 				},
+        plotOptions: {
+          spline: {
+            lineWidth: 2,
+            states: {
+              hover: {
+                lineWidth: 3
+              }
+            },
+            marker: {
+              enabled: false
+            }
+          }
+        },
 				series: [{
-					name: 'Total Msg/Second',
+					name: 'Current Rate Msg/Second',
+					data: []
+				}, {
+					name: 'Mean Rate Msg/Second',
 					data: []
 				}]
-			});		
+			});
+      
 		});
-    
-    socket.on('average_last_ten', function(data) {
-      $('#meanlast').html('' + new Date());
-      var point = [new Date().getTime(), data.message];
-			var series = chart.series[0],
-			shift = series.data.length > 20; // shift if the series is longer than 20
+        
+    socket.on('fps_business', function(data) {
+      var date = new Date().getTime();
+      
+      var rate_point = [date, data.message.businessRequestsPerSecond.currentRate];
+      var mean_point = [date, data.message.businessRequestsPerSecond.mean];
+			var series = fps.series[0],
+			shift = series.data.length > 200; // shift if the series is longer than 20
 		
-    	chart.series[0].addPoint(point, true, shift);
+    	fps.series[0].addPoint(rate_point, true, shift);
+    	fps.series[1].addPoint(mean_point, true, shift);
+      
     });
 		</script>
 		
@@ -152,11 +159,9 @@
   	<div class="container">
       
     <h3>Live Stats</h3>
-    <div id="stats" class="well">
-      <b>Last update : </b><b id="meanlast">-</b><br>
-    </div>
     
-		<div id="container-fps" style="width: 800px; height: 200px; margin: 0 auto"></div>	
+    <div class="well">Displays the business API rate: All monitoring messages received by the monitoring engine</div>
+		<div id="container-fps" style="width: 800px; height: 400px; margin: 0 auto"></div>	
     
   </div>
 	</body>

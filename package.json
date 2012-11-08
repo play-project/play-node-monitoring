@@ -33,6 +33,7 @@
     "underscore": "*",
     "express": "3.0",
     "redis": "*",
-    "mongoose": "*"
+    "mongoose": "*",
+    "measured" : "*"
   }
 }
