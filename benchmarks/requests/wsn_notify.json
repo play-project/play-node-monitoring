@@ -1,0 +1,9 @@
+{
+  "uuid": "c8988467-60e1-4169-8d6b-06bb69008d62",
+  "type": "newInNotifyOutput",
+  "topic": {
+    "name":"TestTopic",
+    "ns":"http://play.ow2.org","prefix":"play"
+  },
+  "timestamp":1352403603772
+}
