@@ -34,6 +34,8 @@
     "express": "3.0",
     "redis": "*",
     "mongoose": "*",
-    "measured" : "*"
-  }
+    "measured" : "*",
+    "optimist": "0.3.4"
+  },
+  "bin": "./bin/server"
 }
