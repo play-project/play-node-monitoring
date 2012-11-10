@@ -83,11 +83,11 @@
       
 		});
         
-    socket.on('fps_business', function(data) {
+    socket.on('fps_api-business', function(data) {
       var date = new Date().getTime();
       
-      var rate_point = [date, data.message.businessRequestsPerSecond.currentRate];
-      var mean_point = [date, data.message.businessRequestsPerSecond.mean];
+      var rate_point = [date, data.message.currentRate];
+      var mean_point = [date, data.message.mean];
 			var series = fps.series[0],
 			shift = series.data.length > 200; // shift if the series is longer than 20
 		

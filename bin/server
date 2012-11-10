@@ -10,18 +10,21 @@ var argv = require('optimist')
   .argv;
 
 var config = require('../lib/util/config');
-var Monitoring = require('../lib/monitoring').Monitoring
 
 try {
   config = config.loadConfig(argv.c);
-}
-catch (err) {
+} catch (err) {
   console.log('Failed to load configuration file ', err);
   process.exit(1);
 }
 
-console.log('Using config ', config);
-
+require('../lib/monitor').start(function(err) {
+  if (err) {
+    console.log('Problem while starting the monitoring engine');
+    process.exit(1);
+  }
+});
+/*
 var m = new Monitoring(config);
 m.start(function(err) {
   if (err) {
@@ -30,3 +33,4 @@ m.start(function(err) {
     util.log('Monitoring is started!');    
   }
 });
+*/

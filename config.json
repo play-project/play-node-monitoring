@@ -16,7 +16,17 @@
   },
   
   "push": {
-    "error" : 10,
+    "error" : 10000,
     "success" : -1
-  }
+  },
+
+  "listeners": [
+    {
+      "name" : "wsn",
+      "code" : "500"
+    },
+    {
+      "name" : "api"
+    }
+  ]
 }
