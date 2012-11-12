@@ -3,7 +3,8 @@
   "type": "newInNotifyOutput",
   "topic": {
     "name":"TestTopic",
-    "ns":"http://play.ow2.org","prefix":"play"
+    "ns":"http://play.ow2.org",
+    "prefix":"play"
   },
   "timestamp":1352403603772
 }
