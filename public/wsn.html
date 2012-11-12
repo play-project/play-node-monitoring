@@ -78,33 +78,61 @@
       
 		<div id="remove" class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert">×</button>
-			<div id="waiting">Loading errors...</div>
+			<div id="waiting">Loading WSN stats...</div>
 		</div>
 
-    <h2>Output Errors</h2>
-    <div id="outerrors"></div>
-      <table id="tableouterrors" class="table table-striped">
-        <thead><tr><th>Subscriber</th><th>Nb failures</th></tr></thead>
+    <h2>Input Messages</h2>
+    <div id="inputmessages"></div>
+      <table id="tableinputmessages" class="table table-striped">
+        <thead><tr><th>Topic</th><th>Nb messages</th></tr></thead>
         <tbody>
         </tbody>
         <tfoot></tfoot>
       </table>
+
+    <h2>Input Errors</h2>
+    <div id="inputerrors"></div>
+    <table id="tableinputerrors" class="table table-striped">
+      <thead><tr><th>Topic</th><th>Nb errors</th></tr></thead>
+      <tbody>
+      </tbody>
+      <tfoot></tfoot>
+    </table>
+
+    <h2>Output Messages</h2>
+    <div id="outputmessages"></div>
+    <table id="tableoutputmessages" class="table table-striped">
+      <thead><tr><th>Topic</th><th>Nb messages</th></tr></thead>
+      <tbody>
+      </tbody>
+      <tfoot></tfoot>
+    </table>
+
+    <h2>Output Errors</h2>
+    <div id="outputerrors"></div>
+    <table id="tableoutputerrors" class="table table-striped">
+      <thead><tr><th>Topic</th><th>Nb errors</th></tr></thead>
+      <tbody>
+      </tbody>
+      <tfoot></tfoot>
+    </table>
     </div>
 
-  <script>
+
+    <script>
   var socket = io.connect();
   
   // TODO : Use socket.io to get errors dynamically
   $.ajax({
-    url: 'api/v1/stats/errors/out',
+    url: 'api/v1/monitoring/wsn/notify/in',
     type: 'GET',
     success: function(data) {
       $('#remove').remove();
       var items = [];
       //$('#outerrors').html(JSON.stringify(data));
       
-      var b = $("#tableouterrors tbody")
-      $.each(data.result.data, function(k, v) {
+      var b = $("#tableinputmessages tbody")
+      $.each(data, function(k, v) {
           b.append('<tr><td><a href=\''+k+'\'>' + k + '</a></td><td><b>' +  v + '</b></td></tr>');
       });      
     },
@@ -113,9 +141,69 @@
       $('#remove').remove();
       $('#outerrors').html(JSON.stringify(err));
     }
-  });      
-  
-  </script>
+  });
+
+  $.ajax({
+    url: 'api/v1/monitoring/wsn/notify/out',
+    type: 'GET',
+    success: function(data) {
+      $('#remove').remove();
+      var items = [];
+      //$('#outerrors').html(JSON.stringify(data));
+
+      var b = $("#tableoutputmessages tbody")
+      $.each(data, function(k, v) {
+        b.append('<tr><td><a href=\''+k+'\'>' + k + '</a></td><td><b>' +  v + '</b></td></tr>');
+      });
+    },
+    error: function(err) {
+      // TODO
+      $('#remove').remove();
+      $('#outerrors').html(JSON.stringify(err));
+    }
+  });
+
+  $.ajax({
+    url: 'api/v1/monitoring/wsn/errors/in',
+    type: 'GET',
+    success: function(data) {
+      $('#remove').remove();
+      var items = [];
+      //$('#outerrors').html(JSON.stringify(data));
+
+      var b = $("#tableinputerrors tbody")
+      $.each(data, function(k, v) {
+        b.append('<tr><td><a href=\''+k+'\'>' + k + '</a></td><td><b>' +  v + '</b></td></tr>');
+      });
+    },
+    error: function(err) {
+      // TODO
+      $('#remove').remove();
+      $('#outerrors').html(JSON.stringify(err));
+    }
+  });
+
+  $.ajax({
+    url: 'api/v1/monitoring/wsn/errors/out',
+    type: 'GET',
+    success: function(data) {
+      $('#remove').remove();
+      var items = [];
+      //$('#outerrors').html(JSON.stringify(data));
+
+      var b = $("#tableoutputerrors tbody")
+      $.each(data, function(k, v) {
+        b.append('<tr><td><a href=\''+k+'\'>' + k + '</a></td><td><b>' +  v + '</b></td></tr>');
+      });
+    },
+    error: function(err) {
+      // TODO
+      $('#remove').remove();
+      $('#outerrors').html(JSON.stringify(err));
+    }
+  });
+
+    </script>
   <script src="assets/javascript/jquery-1.7.2.js"></script>
   <script src="assets/bootstrap/js/bootstrap-transition.js"></script>
   <script src="assets/bootstrap/js/bootstrap-alert.js"></script>
