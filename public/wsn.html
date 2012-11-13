@@ -46,10 +46,16 @@
   						<li class="dropdown"><a class="dropdown-toggle"
   							data-toggle="dropdown" href="#">Stats <b class="caret"></b></a>
   							<ul class="dropdown-menu" id="swatch-menu">
-                  <li><a href="/errors.html">Errors</a></li>
-                  <li><a href="/api/v1/stats" target="_blank">API</a></li>
+                  <li><a href="/errors.html">Subscribers Errors</a></li>
+                  <li><a href="/wsn.html" target="_blank">WSN</a></li>
   							</ul>
   						</li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">API <b class="caret"></b></a>
+                <ul class="dropdown-menu" id="swatch-menu">
+                  <li><a href="/api/v1/stats" target="_blank">Stats</a></li>
+                </ul>
+              </li>
 
 <!--
   						<li class="dropdown"><a class="dropdown-toggle"
@@ -81,7 +87,8 @@
 			<div id="waiting">Loading WSN stats...</div>
 		</div>
 
-    <h2>Input Messages</h2>
+    <h2>Input</h2>
+    <h3>Notifications</h3>
     <div id="inputmessages"></div>
       <table id="tableinputmessages" class="table table-striped">
         <thead><tr><th>Topic</th><th>Nb messages</th></tr></thead>
@@ -90,7 +97,7 @@
         <tfoot></tfoot>
       </table>
 
-    <h2>Input Errors</h2>
+    <h3>Errors</h3>
     <div id="inputerrors"></div>
     <table id="tableinputerrors" class="table table-striped">
       <thead><tr><th>Topic</th><th>Nb errors</th></tr></thead>
@@ -99,7 +106,8 @@
       <tfoot></tfoot>
     </table>
 
-    <h2>Output Messages</h2>
+    <h2>Output</h2>
+    <h3>Notifications</h3>
     <div id="outputmessages"></div>
     <table id="tableoutputmessages" class="table table-striped">
       <thead><tr><th>Topic</th><th>Nb messages</th></tr></thead>
@@ -108,7 +116,7 @@
       <tfoot></tfoot>
     </table>
 
-    <h2>Output Errors</h2>
+    <h3>Errors</h3>
     <div id="outputerrors"></div>
     <table id="tableoutputerrors" class="table table-striped">
       <thead><tr><th>Topic</th><th>Nb errors</th></tr></thead>
@@ -117,7 +125,6 @@
       <tfoot></tfoot>
     </table>
     </div>
-
 
     <script>
   var socket = io.connect();
