@@ -24,13 +24,4 @@ require('../lib/monitor').start(function(err) {
     process.exit(1);
   }
 });
-/*
-var m = new Monitoring(config);
-m.start(function(err) {
-  if (err) {
-    process.exit(1);
-  } else {
-    util.log('Monitoring is started!');    
-  }
-});
-*/
+

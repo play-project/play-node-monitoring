@@ -1,18 +1,22 @@
 /**
  * PLAY live monitoring
  *
+ * Starts the monitoring stuff with the default configuration file.
+ *
  * Copyright(c) 2012 Christophe Hamerling <chamerling@linagora.com>
  * MIT Licensed
  */
 
-var Monitoring = require('./lib/monitoring').Monitoring
+var monitoring = require('./lib/monitor')
+  , config = require('./lib/util/config')
   , util = require('util');
 
-var m = new Monitoring();
-m.start(function(err) {
+config = config.loadConfig('./config.json');
+
+monitoring.start(function(err) {
   if (err) {
     // fail
   } else {
-    util.log('Monitoring is started!');    
+    util.log('Monitoring is started...');
   }
 });
