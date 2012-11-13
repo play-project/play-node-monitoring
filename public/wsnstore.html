@@ -44,11 +44,12 @@
   							</ul>
   						</li>
   						<li class="dropdown"><a class="dropdown-toggle"
-  							data-toggle="dropdown" href="#">Stats <b class="caret"></b></a>
+  							data-toggle="dropdown" href="#">WSN <b class="caret"></b></a>
   							<ul class="dropdown-menu" id="swatch-menu">
                   <li><a href="/errors.html">Subscribers Errors</a></li>
-                  <li><a href="/wsn.html" target="_blank">WSN</a></li>
-  							</ul>
+                  <li><a href="/wsninout.html">In Out</a></li>
+                  <li><a href="/wsnstore.html">Last</a></li>
+                </ul>
   						</li>
               <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">API <b class="caret"></b></a>
@@ -81,126 +82,45 @@
   	</div>
 
   	<div class="container">
-      
-		<div id="remove" class="alert alert-success">
-			<button type="button" class="close" data-dismiss="alert">×</button>
-			<div id="waiting">Loading WSN stats...</div>
-		</div>
 
-    <h2>Input</h2>
-    <h3>Notifications</h3>
-    <div id="inputmessages"></div>
-      <table id="tableinputmessages" class="table table-striped">
-        <thead><tr><th>Topic</th><th>Nb messages</th></tr></thead>
+      <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <h4>Info</h4>
+        Displays the last WSN errors.
+      </div>
+      
+      <div id="remove" class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <div id="waiting">Loading WSN errors...</div>
+      </div>
+
+
+      <div id="errormessages"></div>
+      <table id="tableerrormessages" class="table table-striped">
+        <thead><tr><th>#</th><th>Topic</th><th>Target Endpoint</th><th>Error Message</th><th>Date</th></tr></thead>
         <tbody>
         </tbody>
         <tfoot></tfoot>
       </table>
 
-    <h3>Errors</h3>
-    <div id="inputerrors"></div>
-    <table id="tableinputerrors" class="table table-striped">
-      <thead><tr><th>Topic</th><th>Nb errors</th></tr></thead>
-      <tbody>
-      </tbody>
-      <tfoot></tfoot>
-    </table>
-
-    <h2>Output</h2>
-    <h3>Notifications</h3>
-    <div id="outputmessages"></div>
-    <table id="tableoutputmessages" class="table table-striped">
-      <thead><tr><th>Topic</th><th>Nb messages</th></tr></thead>
-      <tbody>
-      </tbody>
-      <tfoot></tfoot>
-    </table>
-
-    <h3>Errors</h3>
-    <div id="outputerrors"></div>
-    <table id="tableoutputerrors" class="table table-striped">
-      <thead><tr><th>Topic</th><th>Nb errors</th></tr></thead>
-      <tbody>
-      </tbody>
-      <tfoot></tfoot>
-    </table>
     </div>
 
     <script>
   var socket = io.connect();
   
-  // TODO : Use socket.io to get errors dynamically
-  $.ajax({
-    url: 'api/v1/monitoring/wsn/notify/in',
-    type: 'GET',
-    success: function(data) {
-      $('#remove').remove();
-      var items = [];
-      //$('#outerrors').html(JSON.stringify(data));
-      
-      var b = $("#tableinputmessages tbody")
-      $.each(data, function(k, v) {
-          b.append('<tr><td><a href=\''+k+'\'>' + k + '</a></td><td><b>' +  v + '</b></td></tr>');
-      });      
-    },
-    error: function(err) {
-      // TODO
-      $('#remove').remove();
-      $('#outerrors').html(JSON.stringify(err));
-    }
-  });
+
 
   $.ajax({
-    url: 'api/v1/monitoring/wsn/notify/out',
+    url: 'api/v1/monitoring/wsn/errors/out/last',
     type: 'GET',
     success: function(data) {
       $('#remove').remove();
       var items = [];
       //$('#outerrors').html(JSON.stringify(data));
 
-      var b = $("#tableoutputmessages tbody")
+      var b = $("#tableerrormessages tbody")
       $.each(data, function(k, v) {
-        b.append('<tr><td><a href=\''+k+'\'>' + k + '</a></td><td><b>' +  v + '</b></td></tr>');
-      });
-    },
-    error: function(err) {
-      // TODO
-      $('#remove').remove();
-      $('#outerrors').html(JSON.stringify(err));
-    }
-  });
-
-  $.ajax({
-    url: 'api/v1/monitoring/wsn/errors/in',
-    type: 'GET',
-    success: function(data) {
-      $('#remove').remove();
-      var items = [];
-      //$('#outerrors').html(JSON.stringify(data));
-
-      var b = $("#tableinputerrors tbody")
-      $.each(data, function(k, v) {
-        b.append('<tr><td><a href=\''+k+'\'>' + k + '</a></td><td><b>' +  v + '</b></td></tr>');
-      });
-    },
-    error: function(err) {
-      // TODO
-      $('#remove').remove();
-      $('#outerrors').html(JSON.stringify(err));
-    }
-  });
-
-  $.ajax({
-    url: 'api/v1/monitoring/wsn/errors/out',
-    type: 'GET',
-    success: function(data) {
-      $('#remove').remove();
-      var items = [];
-      //$('#outerrors').html(JSON.stringify(data));
-
-      var b = $("#tableoutputerrors tbody")
-      $.each(data, function(k, v) {
-        b.append('<tr><td><a href=\''+k+'\'>' + k + '</a></td><td><b>' +  v + '</b></td></tr>');
+        b.append('<tr><td>' + k + '</td><td>' + v.topic.ns + '/' + v.topic.name + '</td><td><a target="_blank" href=\"' +  v.to + '\">' +  v.to + '</a></td><td>' +  v.error + '</td><td>' +  new Date(v.timestamp).toGMTString() + '</td></tr>');
       });
     },
     error: function(err) {
