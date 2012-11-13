@@ -34,6 +34,8 @@ var id = setInterval(function() {
     // kill me...
     clearInterval(id);
   }
+
+  var start = new Date().getTime();
   request.post(
     {
       url: url,
@@ -42,10 +44,11 @@ var id = setInterval(function() {
       json: true
     },
     function(error, response, body) {
+      var diff = new Date().getTime() - start;
       if (error) {
         console.log('Error ', error);
       } else {
-        console.log('Response Status for request # ' + i + ' : ' + response.statusCode + ' : ', body);
+        console.log('Response for request # ' + i + ' (' + diff + ' ms) : ' + response.statusCode + ' : ', body);
       }
     })
   }, 100);
