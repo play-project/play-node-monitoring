@@ -17,7 +17,7 @@
 
   "mongodb": {
     "host": "localhost",
-    "port": 22303,
+    "port": 27017,
     "password": null,
     "db" : "play-monitoring-store"
   },
