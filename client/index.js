@@ -16,9 +16,9 @@ var i = 0;
 var id = setInterval(function() {
   var message = {
     uuid: uuid.v1(),
-    type: "newOutNotifyError",
+    type: "newInNotifyOutput",
     topic: {
-      name: "TestTopic",
+      name: "TestTopic" + random(),
       ns: "http://play.ow2.org",
       prefix:"play"
     },
@@ -51,6 +51,10 @@ var id = setInterval(function() {
         console.log('Response for request # ' + i + ' (' + diff + ' ms) : ' + response.statusCode + ' : ', body);
       }
     })
-  }, 100);
+  }, 150);
+
+function random() {
+  return Math.floor((Math.random()*10)+1);
+}
 
 
