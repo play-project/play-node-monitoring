@@ -85,44 +85,27 @@
       
 		<div id="remove" class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert">×</button>
-			<div id="waiting">Waiting message...</div>
+			<div id="waiting">Waiting subscribe message...</div>
 		</div>
-    
-    <h3>Live Stats</h3>
-    <div id="stats" class="well">
-      <b>Last update : </b><b id="meanlast">-</b><br>
-      <b>FPS since start : </b><b id="meanstart">-</b><br>
-      <b>FPS in the last ten seconds : </b><b id="meanten">-</b>
-    </div>
 
-    <h3>Messages</h3>
+    <h3>Subscribes</h3>
     <div id="socketout"></div>
 </div>
 
   <script>
   var socket = io.connect();
   var nb = 0;
-  var content = document.getElementById("notify");
-  var count = document.getElementById("count");
 
-  socket.on('notify', function(data) {
+  socket.on('subscribe', function(data) {
     nb++;
     var receivedAt = new Date();
-    $('#socketout').prepend('<div class=\"alert alert-info\">New message #' + nb + ' at ' + receivedAt.toGMTString() + '</div><pre><code>' + JSON.stringify(data.message, null, 4) + '' + '</code></pre><br><br>');        
+    $('#socketout').prepend('<div class=\"alert alert-info\">New subscribe #' + nb + ' at ' + receivedAt.toGMTString() + '</div><pre><code>' + JSON.stringify(data.message, null, 4) + '' + '</code></pre><br><br>');
+    // remove olldies...
+    // TODO
   
     $('#remove').remove();
   });
-  
-  socket.on('average_since_start', function(data) {
-    $('#meanstart').html(data.message);
-    $('#meanlast').html('' + new Date());
-  });
-  
-  socket.on('average_last_ten', function(data) {
-    $('#meanten').html(data.message);
-    $('#meanlast').html('' + new Date());
-  });
-  
+
   </script>
   <script src="assets/javascript/jquery-1.7.2.js"></script>
   <script src="assets/bootstrap/js/bootstrap-transition.js"></script>
