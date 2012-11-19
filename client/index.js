@@ -16,7 +16,7 @@ var i = 0;
 var id = setInterval(function() {
   var message = {
     uuid: uuid.v1(),
-    type: "newInNotifyOutput",
+    type: "newOutNotify",
     topic: {
       name: "TestTopic" + random(),
       ns: "http://play.ow2.org",

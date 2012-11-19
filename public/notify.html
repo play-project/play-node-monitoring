@@ -82,15 +82,10 @@
   	</div>
 
   	<div class="container">
-      
-		<div id="remove" class="alert alert-success">
-			<button type="button" class="close" data-dismiss="alert">×</button>
-			<div id="waiting">Waiting message...</div>
-		</div>
 
-    <h3>Live Messages per Topic</h3>
+    <h3>Live Notification Delivery per Topic</h3>
       <div class="well">
-        <div id="total"></div>
+        <div id="totalout">Waiting notification...</div>
       </div>
     <div id="socketout"></div>
 
@@ -100,40 +95,45 @@
 
   <script>
   var socket = io.connect();
-  var nb = 0;
+  var nbout = 0;
   var content = document.getElementById("notify");
   var count = document.getElementById("count");
   var topics = {};
+  var startedAt = new Date();
 
   socket.on('notify', function(data) {
-    nb++;
-    if (nb == 1) {
-      $('#remove').remove();
-    }
-
+    var total = 0;
     var receivedAt = new Date();
     var notify = data.message.data;
     var topic_name = notify.topic.ns + '/' + notify.topic.name;
-    var total = 0;
 
-    if (topics[topic_name] != undefined) {
-      topics[topic_name]++;
-    } else {
-      topics[topic_name] = 1;
-    }
-
-    var list = '<table class=\"table\"><thead><tr><th>Topic Name</th><th>Nb Notify</th></tr></thead><tbody>';
-    for(var topic in topics) {
-      total += topics[topic];
-      var badge = ' badge-success';
-      if (topic === topic_name){
-        badge = ' badge-important';
+    if (notify.type === 'newOutNotify') {
+      nbout++;
+      if (nbout == 1) {
+        $('#remove').remove();
       }
-      list += '<tr><td><a href=\"'+topic+'\">' + topic + '</a></td><td><span class=\"badge'+badge+'\">' + topics[topic] + '</span></td></tr>';
+
+      if (topics[topic_name] != undefined) {
+        topics[topic_name]++;
+      } else {
+        topics[topic_name] = 1;
+      }
+
+      var list = '<table class=\"table\"><thead><tr><th>Topic Name</th><th>Nb Notify</th></tr></thead><tbody>';
+      for(var topic in topics) {
+        total += topics[topic];
+        var badge = ' badge-success';
+        if (topic === topic_name){
+          badge = ' badge-important';
+        }
+        list += '<tr><td><a href=\"'+topic+'\">' + topic + '</a></td><td><span class=\"badge'+badge+'\">' + topics[topic] + '</span></td></tr>';
+      }
+      list += '</tbody></table>'
+      $('#socketout').html(list);
+      $('#totalout').html('Nb of messages : ' + total + ' since '+ startedAt.toGMTString() +', last received on ' + receivedAt.toGMTString());
+    } else {
+      // NOP
     }
-    list += '</tbody></table>'
-    $('#socketout').html(list);
-    $('#total').html('Nb of messages : ' + total + ', last at ' + new Date().toGMTString());
   });
   
   </script>
